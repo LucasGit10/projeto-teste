@@ -1,0 +1,5 @@
+app_name: teste
+cloud: local
+environment: homolog
+port: '80'
+repository: https://github.com/LucasGit10/book-catalog-frontend#

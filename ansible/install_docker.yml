@@ -1,0 +1,41 @@
+- name: Instalar Docker e Docker Compose
+  hosts: app
+  become: true
+
+  tasks:
+    - name: Atualiza os pacotes
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: Instala dependências do Docker
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Adiciona chave GPG do Docker
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+
+    - name: Adiciona repositório do Docker
+      shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+
+    - name: Instala Docker CE
+      apt:
+        name: docker-ce
+        state: latest
+
+    - name: Adiciona usuário ao grupo docker
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Instala Docker Compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'

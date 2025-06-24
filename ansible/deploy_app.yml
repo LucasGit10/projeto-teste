@@ -1,0 +1,18 @@
+- name: Deploy da aplicação
+  hosts: app
+  become: true
+
+  vars:
+    app_repo: "https://github.com/seu-usuario/seu-app.git"
+
+  tasks:
+    - name: Clonar aplicação
+      git:
+        repo: "{{ app_repo }}"
+        dest: /home/ubuntu/app
+        update: yes
+
+    - name: Subir app com Docker Compose
+      shell: docker-compose up -d
+      args:
+        chdir: /home/ubuntu/app

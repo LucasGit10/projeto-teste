@@ -1,0 +1,26 @@
+- name: Setup observabilidade (Prometheus, Grafana, Loki, Jaeger)
+  hosts: app
+  become: true
+
+  vars:
+    observ_dir: /home/ubuntu/observability
+
+  tasks:
+    - name: Criar pasta de observabilidade
+      file:
+        path: "{{ observ_dir }}"
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+
+    - name: Copiar docker-compose observability
+      template:
+        src: docker-compose-observability.yml.j2
+        dest: "{{ observ_dir }}/docker-compose.yml"
+        mode: 0644
+
+    - name: Subir observabilidade com Docker Compose
+      shell: docker-compose up -d
+      args:
+        chdir: "{{ observ_dir }}"
